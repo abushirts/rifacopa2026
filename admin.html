@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Administração da Rifa</title>
+    <meta name="description" content="Controle administrativo da rifa da camisa da seleção.">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body data-admin="true">
+    <header class="admin-hero">
+      <div>
+        <p class="eyebrow">Área privada</p>
+        <h1>Administração da Rifa</h1>
+        <p class="lead">Use esta tela para marcar números disponíveis, reservados ou vendidos. Esta página não deve ser divulgada para os compradores.</p>
+      </div>
+      <a class="button button--primary" href="index.html">Ver página pública</a>
+    </header>
+
+    <main class="admin-main">
+      <section class="summary" aria-label="Resumo da rifa">
+        <article>
+          <span id="totalNumbers">0</span>
+          <p>Números</p>
+        </article>
+        <article>
+          <span id="availableCount">0</span>
+          <p>Disponíveis</p>
+        </article>
+        <article>
+          <span id="reservedCount">0</span>
+          <p>Reservados</p>
+        </article>
+        <article>
+          <span id="soldCount">0</span>
+          <p>Vendidos</p>
+        </article>
+      </section>
+
+      <section class="details" aria-label="Informações da campanha">
+        <div>
+          <h2>Informações</h2>
+          <dl>
+            <div>
+              <dt>Prêmio</dt>
+              <dd id="prizeName">Camisa da Seleção Brasileira Amarela (Tamanho a combinar)</dd>
+            </div>
+            <div>
+              <dt>Valor</dt>
+              <dd id="ticketPrice">R$ 5,00</dd>
+            </div>
+            <div>
+              <dt>Sorteio</dt>
+              <dd id="drawDate">Pela Loteria Federal após todos os números serem vendidos</dd>
+            </div>
+            <div>
+              <dt>Pagamento</dt>
+              <dd id="paymentInfo">PIX após reserva</dd>
+            </div>
+          </dl>
+        </div>
+        <div class="notice">
+          <strong>Como usar</strong>
+          <p>Escolha a ação, informe o nome se quiser, e clique nos números.</p>
+          <p>Use Exportar para salvar o controle atualizado.</p>
+        </div>
+      </section>
+
+      <section class="numbers" id="numeros">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Controle interno</p>
+            <h2>Números da rifa</h2>
+          </div>
+        </div>
+
+        <div class="admin-panel" id="adminPanel">
+          <div>
+            <h3>Administração</h3>
+            <p>Esses campos são preenchidos somente por você, não pelo comprador.</p>
+          </div>
+          <label>
+            <span>Ação ao clicar</span>
+            <select id="adminAction">
+              <option value="reserved">Marcar reservado</option>
+              <option value="sold">Marcar vendido</option>
+              <option value="available">Marcar disponível</option>
+            </select>
+          </label>
+          <label>
+            <span>Nome do comprador</span>
+            <input id="buyerName" placeholder="Ex.: João Silva">
+          </label>
+          <label>
+            <span>Intervalo</span>
+            <input id="rangeInput" placeholder="Ex.: 00-20">
+          </label>
+          <button class="button button--secondary" id="applyRange" type="button">Aplicar intervalo</button>
+          <button class="button button--secondary" id="exportData" type="button">Exportar controle</button>
+          <label class="file-button">
+            Importar controle
+            <input id="importData" type="file" accept="application/json">
+          </label>
+        </div>
+
+        <div class="toolbar" role="search">
+          <label>
+            <span>Buscar número</span>
+            <input id="searchInput" inputmode="numeric" placeholder="Ex.: 05">
+          </label>
+          <label>
+            <span>Status</span>
+            <select id="statusFilter">
+              <option value="all">Todos</option>
+              <option value="available">Disponíveis</option>
+              <option value="reserved">Reservados</option>
+              <option value="sold">Vendidos</option>
+            </select>
+          </label>
+          <button class="button button--secondary" id="clearFilters" type="button">Limpar</button>
+        </div>
+
+        <p class="result-note" id="resultNote"></p>
+        <div class="grid" id="numbersGrid" aria-live="polite"></div>
+      </section>
+    </main>
+
+    <footer>
+      <p>Página administrativa. Divulgue apenas o arquivo/link da página pública.</p>
+    </footer>
+
+    <script src="app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Rifa Camisa da Seleção</title>
+    <meta name="description" content="Consulte números disponíveis da rifa da camisa da seleção.">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <header class="hero">
+      <div class="hero__art">
+        <img class="campaign-art" src="arte-rifa-camisa.jpg" alt="Cartaz da rifa da camisa da Seleção Brasileira">
+        <div class="campaign-art__missing" hidden>
+          <strong>Arte não encontrada</strong>
+          <span>Salve a imagem da campanha nesta pasta com o nome <b>arte-rifa-camisa.jpg</b>.</span>
+        </div>
+      </div>
+      <div class="hero__content">
+        <p class="eyebrow">Campanha de arrecadação</p>
+        <h1>Rifa Camisa da Seleção</h1>
+        <p class="lead">Números de 00 a 119 por apenas R$ 5,00. Consulte, escolha e fale comigo para reservar.</p>
+        <div class="hero__actions">
+          <a class="button button--primary" id="whatsappHero" href="#numeros">Reservar pelo WhatsApp</a>
+          <a class="button button--ghost" href="#numeros">Ver números</a>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="summary" aria-label="Resumo da rifa">
+        <article>
+          <span id="totalNumbers">0</span>
+          <p>Números</p>
+        </article>
+        <article>
+          <span id="availableCount">0</span>
+          <p>Disponíveis</p>
+        </article>
+        <article>
+          <span id="reservedCount">0</span>
+          <p>Reservados</p>
+        </article>
+        <article>
+          <span id="soldCount">0</span>
+          <p>Vendidos</p>
+        </article>
+      </section>
+
+      <section class="details" aria-label="Informações da campanha">
+        <div>
+          <h2>Informações</h2>
+          <dl>
+            <div>
+              <dt>Prêmio</dt>
+              <dd id="prizeName">Camisa da Seleção Brasileira Amarela (Tamanho a combinar)</dd>
+            </div>
+            <div>
+              <dt>Valor</dt>
+              <dd id="ticketPrice">R$ 5,00</dd>
+            </div>
+            <div>
+              <dt>Sorteio</dt>
+              <dd id="drawDate">Pela Loteria Federal após todos os números serem vendidos</dd>
+            </div>
+            <div>
+              <dt>Pagamento</dt>
+              <dd id="paymentInfo">PIX após reserva</dd>
+            </div>
+          </dl>
+        </div>
+        <div class="notice">
+          <strong>Legenda</strong>
+          <p><span class="dot dot--available"></span> disponível</p>
+          <p><span class="dot dot--reserved"></span> reservado</p>
+          <p><span class="dot dot--sold"></span> vendido</p>
+        </div>
+      </section>
+
+      <section class="numbers" id="numeros">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Consulta online</p>
+            <h2>Números da rifa</h2>
+          </div>
+        </div>
+
+        <div class="toolbar" role="search">
+          <label>
+            <span>Buscar número</span>
+            <input id="searchInput" inputmode="numeric" placeholder="Ex.: 05">
+          </label>
+          <label>
+            <span>Status</span>
+            <select id="statusFilter">
+              <option value="all">Todos</option>
+              <option value="available">Disponíveis</option>
+              <option value="reserved">Reservados</option>
+              <option value="sold">Vendidos</option>
+            </select>
+          </label>
+          <button class="button button--secondary" id="clearFilters" type="button">Limpar</button>
+        </div>
+
+        <div class="selection-panel" id="selectionPanel" hidden>
+          <div>
+            <strong>Números selecionados</strong>
+            <span id="selectedNumbers">Nenhum número selecionado</span>
+          </div>
+          <button class="button button--primary" id="reserveSelected" type="button">Reservar selecionados pelo WhatsApp</button>
+          <button class="button button--secondary" id="clearSelection" type="button">Limpar seleção</button>
+        </div>
+
+        <p class="result-note" id="resultNote"></p>
+        <div class="grid" id="numbersGrid" aria-live="polite"></div>
+      </section>
+    </main>
+
+    <footer>
+      <p>Atualize a página antes de conferir. Reservas são confirmadas após pagamento.</p>
+    </footer>
+
+    <script src="app.js"></script>
+    <script>
+      const campaignImage = document.querySelector(".campaign-art");
+      const missingImage = document.querySelector(".campaign-art__missing");
+      const imageCandidates = [
+        "arte-rifa-camisa.jpg",
+        "arte-rifa-camisa.jpeg",
+        "arte-rifa-camisa.png",
+        "arte-rifa-camisa.webp",
+        "rifa-camisa.jpg",
+        "rifa-camisa.png",
+        "rifa-camisa.webp",
+        "cartaz-rifa.jpg",
+        "cartaz-rifa.png",
+        "cartaz-rifa.webp"
+      ];
+      let imageCandidateIndex = 0;
+
+      campaignImage.addEventListener("error", () => {
+        imageCandidateIndex += 1;
+        if (imageCandidateIndex < imageCandidates.length) {
+          campaignImage.src = imageCandidates[imageCandidateIndex];
+          return;
+        }
+
+        campaignImage.hidden = true;
+        missingImage.hidden = false;
+      });
+    </script>
+  </body>
+</html>
