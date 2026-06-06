@@ -165,7 +165,12 @@ select {
 }
 
 .eyebrow {
-  margin: 0 0 10px;
+  width: fit-content;
+  margin: 0 0 14px;
+  padding: 6px 10px;
+  border: 1px solid rgba(246, 201, 69, .34);
+  border-radius: 6px;
+  background: rgba(246, 201, 69, .16);
   color: var(--yellow);
   font-size: .82rem;
   font-weight: 800;
@@ -183,9 +188,32 @@ p {
 
 h1 {
   margin-bottom: 18px;
-  font-size: clamp(2.6rem, 8vw, 5.6rem);
-  line-height: .98;
+  font-size: clamp(2.8rem, 7vw, 5.9rem);
+  line-height: .92;
   letter-spacing: 0;
+}
+
+h1 span,
+h1 strong {
+  display: block;
+}
+
+h1 span {
+  color: #ffffff;
+  text-shadow:
+    0 4px 0 rgba(5, 43, 33, .58),
+    0 16px 34px rgba(0, 0, 0, .3);
+}
+
+h1 strong {
+  width: fit-content;
+  margin-top: 8px;
+  color: var(--yellow);
+  font-style: italic;
+  text-shadow:
+    0 4px 0 #0b4d34,
+    0 12px 30px rgba(0, 0, 0, .35);
+  transform: rotate(-1.5deg);
 }
 
 h2 {
@@ -200,8 +228,15 @@ h3 {
 
 .lead {
   max-width: 520px;
-  color: rgba(255, 255, 255, .9);
-  font-size: clamp(1.06rem, 2vw, 1.35rem);
+  color: rgba(255, 255, 255, .94);
+  font-size: clamp(1.06rem, 2vw, 1.45rem);
+  font-weight: 700;
+  text-shadow: 0 4px 18px rgba(0, 0, 0, .34);
+}
+
+.lead b {
+  color: var(--yellow);
+  font-weight: 900;
 }
 
 .hero__actions,
@@ -532,6 +567,10 @@ footer {
     border-left: 0;
     border-top: 4px solid var(--yellow);
     padding-top: 18px;
+  }
+
+  h1 {
+    font-size: clamp(2.6rem, 14vw, 4.6rem);
   }
 
   .hero__actions .button,
