@@ -298,13 +298,7 @@ function renderGrid() {
     button.setAttribute("aria-label", getTicketTitle(ticket));
 
     button.addEventListener("click", () => {
-      if (state.isAdmin && !CONFIG.sheetCsvUrl) {
-        updateTicket(ticket);
-        saveLocalData();
-        state.selectedNumbers.delete(ticket.number);
-        render();
-        return;
-      }
+      if (state.isAdmin) return;
 
       if (ticket.status === "available") {
         toggleTicketSelection(ticket);

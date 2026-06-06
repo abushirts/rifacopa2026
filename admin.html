@@ -12,7 +12,7 @@
       <div>
         <p class="eyebrow">Área privada</p>
         <h1>Administração da Rifa</h1>
-        <p class="lead">Use esta tela para marcar números disponíveis, reservados ou vendidos. Esta página não deve ser divulgada para os compradores.</p>
+        <p class="lead">O controle oficial dos números é feito na planilha do Google Sheets.</p>
       </div>
       <a class="button button--primary" href="index.html">Ver página pública</a>
     </header>
@@ -23,28 +23,28 @@
           <h2>Controle pelo celular</h2>
           <dl>
             <div>
-              <dt>Onde editar</dt>
+              <dt>Onde alterar números</dt>
               <dd>Google Sheets</dd>
             </div>
             <div>
-              <dt>Colunas</dt>
-              <dd>numero, status, nome</dd>
-            </div>
-            <div>
-              <dt>Status aceitos</dt>
+              <dt>Status disponíveis</dt>
               <dd>available, reserved, sold</dd>
             </div>
             <div>
-              <dt>Atualização</dt>
-              <dd>Recarregue a página pública após editar a planilha</dd>
+              <dt>Coluna do comprador</dt>
+              <dd>nome</dd>
+            </div>
+            <div>
+              <dt>Depois de editar</dt>
+              <dd>Recarregue o site para conferir</dd>
             </div>
           </dl>
         </div>
         <div class="notice">
-          <strong>Modo recomendado</strong>
-          <p>Edite os números direto na planilha pelo celular. O site público lê a planilha publicada em CSV.</p>
-          <p>Depois que o link for configurado no app.js, você não precisa reenviar o site a cada venda.</p>
-          <a class="button button--secondary" id="openSheet" href="#" aria-disabled="true">Abrir planilha</a>
+          <strong>Como atualizar</strong>
+          <p>Abra a planilha, altere o status do número e preencha o nome do comprador quando quiser.</p>
+          <p>Esta tela abaixo é só para conferir como o público verá os números.</p>
+          <a class="button button--secondary" id="openSheet" href="#" target="_blank" rel="noopener">Abrir planilha</a>
         </div>
       </section>
 
@@ -90,47 +90,19 @@
           </dl>
         </div>
         <div class="notice">
-          <strong>Como usar</strong>
-          <p>Escolha a ação, informe o nome se quiser, e clique nos números.</p>
-          <p>Use Exportar para salvar o controle atualizado.</p>
+          <strong>Legenda</strong>
+          <p><span class="dot dot--available"></span> disponível</p>
+          <p><span class="dot dot--reserved"></span> reservado</p>
+          <p><span class="dot dot--sold"></span> vendido</p>
         </div>
       </section>
 
       <section class="numbers" id="numeros">
         <div class="section-heading">
           <div>
-            <p class="eyebrow">Controle interno</p>
+            <p class="eyebrow">Conferência</p>
             <h2>Números da rifa</h2>
           </div>
-        </div>
-
-        <div class="admin-panel" id="adminPanel">
-          <div>
-            <h3>Administração</h3>
-            <p>Esses campos são preenchidos somente por você, não pelo comprador.</p>
-          </div>
-          <label>
-            <span>Ação ao clicar</span>
-            <select id="adminAction">
-              <option value="reserved">Marcar reservado</option>
-              <option value="sold">Marcar vendido</option>
-              <option value="available">Marcar disponível</option>
-            </select>
-          </label>
-          <label>
-            <span>Nome do comprador</span>
-            <input id="buyerName" placeholder="Ex.: João Silva">
-          </label>
-          <label>
-            <span>Intervalo</span>
-            <input id="rangeInput" placeholder="Ex.: 00-20">
-          </label>
-          <button class="button button--secondary" id="applyRange" type="button">Aplicar intervalo</button>
-          <button class="button button--secondary" id="exportData" type="button">Exportar controle</button>
-          <label class="file-button">
-            Importar controle
-            <input id="importData" type="file" accept="application/json">
-          </label>
         </div>
 
         <div class="toolbar" role="search">
@@ -156,7 +128,7 @@
     </main>
 
     <footer>
-      <p>Página administrativa. Divulgue apenas o arquivo/link da página pública.</p>
+      <p>Página administrativa. Divulgue apenas o link da página pública.</p>
     </footer>
 
     <script src="app.js"></script>
