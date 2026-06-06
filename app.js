@@ -3,7 +3,8 @@ const CONFIG = {
   firstNumber: 0,
   defaultTotal: 120,
   numberPadding: 2,
-  sheetCsvUrl: "",
+  sheetCsvUrl: "https://docs.google.com/spreadsheets/d/1AHWfMZH3vjHFnESDL-IpOyA8Ay14RluC1U7a49oqjD0/export?format=csv&gid=0",
+  sheetEditUrl: "https://docs.google.com/spreadsheets/d/1AHWfMZH3vjHFnESDL-IpOyA8Ay14RluC1U7a49oqjD0/edit?usp=sharing",
   whatsappNumber: "5521972249846",
   whatsappMessage: "Olá! Quero reservar o(s) número(s) {number} da rifa da Camisa da Seleção Brasileira Amarela (Tamanho a combinar).",
   storageKey: "rifa-camisa-selecao-v3"
@@ -33,7 +34,6 @@ const els = {
   clearFilters: document.querySelector("#clearFilters"),
   numbersGrid: document.querySelector("#numbersGrid"),
   resultNote: document.querySelector("#resultNote"),
-  adminLogin: document.querySelector("#adminLogin"),
   adminPanel: document.querySelector("#adminPanel"),
   adminAction: document.querySelector("#adminAction"),
   buyerName: document.querySelector("#buyerName"),
@@ -44,7 +44,8 @@ const els = {
   selectionPanel: document.querySelector("#selectionPanel"),
   selectedNumbers: document.querySelector("#selectedNumbers"),
   reserveSelected: document.querySelector("#reserveSelected"),
-  clearSelection: document.querySelector("#clearSelection")
+  clearSelection: document.querySelector("#clearSelection"),
+  openSheet: document.querySelector("#openSheet")
 };
 
 init();
@@ -58,18 +59,19 @@ async function init() {
 }
 
 async function loadData() {
-  const local = readLocalData();
-  if (local) return local;
-
   if (CONFIG.sheetCsvUrl) {
     try {
-      const response = await fetch(CONFIG.sheetCsvUrl);
+      const response = await fetch(addCacheBuster(CONFIG.sheetCsvUrl), { cache: "no-store" });
+      if (!response.ok) throw new Error(`Planilha retornou HTTP ${response.status}`);
       const csv = await response.text();
       return csvToData(csv);
     } catch (error) {
       console.warn("Não foi possível carregar a planilha publicada.", error);
     }
   }
+
+  const local = readLocalData();
+  if (local) return local;
 
   try {
     const response = await fetch("rifa-dados.json", { cache: "no-store" });
@@ -79,6 +81,11 @@ async function loadData() {
   }
 
   return createDefaultData();
+}
+
+function addCacheBuster(url) {
+  const separator = url.includes("?") ? "&" : "?";
+  return `${url}${separator}_=${Date.now()}`;
 }
 
 function readLocalData() {
@@ -128,17 +135,17 @@ function normalizeTickets(data) {
 }
 
 function bindEvents() {
-  els.searchInput.addEventListener("input", (event) => {
+  els.searchInput?.addEventListener("input", (event) => {
     state.search = event.target.value.trim();
     renderGrid();
   });
 
-  els.statusFilter.addEventListener("change", (event) => {
+  els.statusFilter?.addEventListener("change", (event) => {
     state.filter = event.target.value;
     renderGrid();
   });
 
-  els.clearFilters.addEventListener("click", () => {
+  els.clearFilters?.addEventListener("click", () => {
     state.search = "";
     state.filter = "all";
     els.searchInput.value = "";
@@ -154,24 +161,6 @@ function bindEvents() {
   els.clearSelection?.addEventListener("click", () => {
     state.selectedNumbers.clear();
     renderGrid();
-  });
-
-  els.adminLogin?.addEventListener("click", () => {
-    if (state.isAdmin) {
-      state.isAdmin = false;
-      els.adminPanel.hidden = true;
-      renderGrid();
-      return;
-    }
-
-    const password = prompt("Senha de administrador:");
-    if (password === CONFIG.adminPassword) {
-      state.isAdmin = true;
-      els.adminPanel.hidden = false;
-      renderGrid();
-    } else if (password !== null) {
-      alert("Senha incorreta.");
-    }
   });
 
   els.applyRange?.addEventListener("click", () => {
@@ -198,6 +187,7 @@ function bindEvents() {
 function render() {
   renderMeta();
   renderSummary();
+  renderSheetLink();
   renderGrid();
 }
 
@@ -219,6 +209,18 @@ function renderSummary() {
   els.soldCount.textContent = String(counts.sold);
 }
 
+function renderSheetLink() {
+  if (!els.openSheet) return;
+
+  if (CONFIG.sheetEditUrl) {
+    els.openSheet.href = CONFIG.sheetEditUrl;
+    els.openSheet.removeAttribute("aria-disabled");
+  } else {
+    els.openSheet.href = "#";
+    els.openSheet.setAttribute("aria-disabled", "true");
+  }
+}
+
 function renderGrid() {
   const visible = getVisibleTickets();
   els.numbersGrid.innerHTML = "";
@@ -237,7 +239,7 @@ function renderGrid() {
     button.setAttribute("aria-label", getTicketTitle(ticket));
 
     button.addEventListener("click", () => {
-      if (state.isAdmin) {
+      if (state.isAdmin && !CONFIG.sheetCsvUrl) {
         updateTicket(ticket);
         saveLocalData();
         state.selectedNumbers.delete(ticket.number);
@@ -396,20 +398,65 @@ function importDataFile(event) {
 }
 
 function csvToData(csv) {
-  const rows = csv.trim().split(/\r?\n/).map((line) => line.split(",").map((item) => item.trim()));
-  const header = rows.shift().map((item) => item.toLowerCase());
+  const rows = csv.trim().split(/\r?\n/).map(parseCsvLine);
+  const header = rows.shift().map(normalizeHeader);
   const index = {
     number: header.indexOf("numero"),
     status: header.indexOf("status"),
     buyer: header.indexOf("nome")
   };
+  if (index.buyer === -1) index.buyer = header.indexOf("comprador");
+
+  const tickets = rows
+    .map((row) => ({
+      number: Number(String(row[index.number] || "").replace(/\D/g, "")),
+      status: row[index.status] || "available",
+      buyer: index.buyer >= 0 ? row[index.buyer] || "" : ""
+    }))
+    .filter((ticket) => Number.isInteger(ticket.number));
+
+  const numbers = tickets.map((ticket) => ticket.number);
+  const firstNumber = numbers.length ? Math.min(...numbers) : CONFIG.firstNumber;
+  const total = numbers.length ? Math.max(...numbers) - firstNumber + 1 : CONFIG.defaultTotal;
 
   return {
-    meta: {},
-    tickets: rows.map((row) => ({
-      number: Number(row[index.number]),
-      status: row[index.status] || "available",
-      buyer: row[index.buyer] || ""
-    }))
+    meta: createDefaultData().meta,
+    firstNumber,
+    total,
+    tickets
   };
+}
+
+function parseCsvLine(line) {
+  const values = [];
+  let current = "";
+  let quoted = false;
+
+  for (let index = 0; index < line.length; index += 1) {
+    const char = line[index];
+    const next = line[index + 1];
+
+    if (char === '"' && quoted && next === '"') {
+      current += '"';
+      index += 1;
+    } else if (char === '"') {
+      quoted = !quoted;
+    } else if (char === "," && !quoted) {
+      values.push(current.trim());
+      current = "";
+    } else {
+      current += char;
+    }
+  }
+
+  values.push(current.trim());
+  return values;
+}
+
+function normalizeHeader(value) {
+  return String(value || "")
+    .trim()
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
 }

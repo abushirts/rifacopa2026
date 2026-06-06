@@ -18,6 +18,36 @@
     </header>
 
     <main class="admin-main">
+      <section class="details" aria-label="Controle por planilha">
+        <div>
+          <h2>Controle pelo celular</h2>
+          <dl>
+            <div>
+              <dt>Onde editar</dt>
+              <dd>Google Sheets</dd>
+            </div>
+            <div>
+              <dt>Colunas</dt>
+              <dd>numero, status, nome</dd>
+            </div>
+            <div>
+              <dt>Status aceitos</dt>
+              <dd>available, reserved, sold</dd>
+            </div>
+            <div>
+              <dt>Atualização</dt>
+              <dd>Recarregue a página pública após editar a planilha</dd>
+            </div>
+          </dl>
+        </div>
+        <div class="notice">
+          <strong>Modo recomendado</strong>
+          <p>Edite os números direto na planilha pelo celular. O site público lê a planilha publicada em CSV.</p>
+          <p>Depois que o link for configurado no app.js, você não precisa reenviar o site a cada venda.</p>
+          <a class="button button--secondary" id="openSheet" href="#" aria-disabled="true">Abrir planilha</a>
+        </div>
+      </section>
+
       <section class="summary" aria-label="Resumo da rifa">
         <article>
           <span id="totalNumbers">0</span>
