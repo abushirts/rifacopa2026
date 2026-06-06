@@ -66,7 +66,13 @@ async function loadData() {
       const csv = await response.text();
       return csvToData(csv);
     } catch (error) {
-      console.warn("Não foi possível carregar a planilha publicada.", error);
+      console.warn("Não foi possível carregar a planilha por CSV. Tentando JSONP.", error);
+    }
+
+    try {
+      return await loadGoogleSheetJsonp();
+    } catch (error) {
+      console.warn("Não foi possível carregar a planilha por JSONP.", error);
     }
   }
 
@@ -86,6 +92,59 @@ async function loadData() {
 function addCacheBuster(url) {
   const separator = url.includes("?") ? "&" : "?";
   return `${url}${separator}_=${Date.now()}`;
+}
+
+function getSheetId() {
+  return CONFIG.sheetCsvUrl.match(/\/spreadsheets\/d\/([^/]+)/)?.[1] || "";
+}
+
+function getSheetGid() {
+  return CONFIG.sheetCsvUrl.match(/[?&]gid=(\d+)/)?.[1] || "0";
+}
+
+function loadGoogleSheetJsonp() {
+  const sheetId = getSheetId();
+  if (!sheetId) {
+    return Promise.reject(new Error("ID da planilha não encontrado."));
+  }
+
+  return new Promise((resolve, reject) => {
+    const callbackName = `googleSheetCallback_${Date.now()}_${Math.random().toString(36).slice(2)}`;
+    const script = document.createElement("script");
+    const timeout = window.setTimeout(() => {
+      cleanup();
+      reject(new Error("Tempo limite ao carregar a planilha."));
+    }, 12000);
+
+    function cleanup() {
+      window.clearTimeout(timeout);
+      delete window[callbackName];
+      script.remove();
+    }
+
+    window[callbackName] = (response) => {
+      try {
+        cleanup();
+        if (response.status !== "ok") {
+          reject(new Error(response.errors?.[0]?.detailed_message || "Resposta inválida da planilha."));
+          return;
+        }
+        resolve(googleTableToData(response.table));
+      } catch (error) {
+        reject(error);
+      }
+    };
+
+    script.onerror = () => {
+      cleanup();
+      reject(new Error("Falha ao carregar o script da planilha."));
+    };
+
+    const gid = encodeURIComponent(getSheetGid());
+    const tqx = encodeURIComponent(`responseHandler:${callbackName}`);
+    script.src = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?gid=${gid}&tqx=${tqx}&_=${Date.now()}`;
+    document.head.appendChild(script);
+  });
 }
 
 function readLocalData() {
@@ -400,6 +459,16 @@ function importDataFile(event) {
 function csvToData(csv) {
   const rows = csv.trim().split(/\r?\n/).map(parseCsvLine);
   const header = rows.shift().map(normalizeHeader);
+  return rowsToData(header, rows);
+}
+
+function googleTableToData(table) {
+  const header = table.cols.map((column) => normalizeHeader(column.label || column.id));
+  const rows = table.rows.map((row) => row.c.map((cell) => cell?.v ?? ""));
+  return rowsToData(header, rows);
+}
+
+function rowsToData(header, rows) {
   const index = {
     number: header.indexOf("numero"),
     status: header.indexOf("status"),
