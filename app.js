@@ -28,6 +28,7 @@ const els = {
   ticketPrice: document.querySelector("#ticketPrice"),
   drawDate: document.querySelector("#drawDate"),
   paymentInfo: document.querySelector("#paymentInfo"),
+  heroLead: document.querySelector(".hero__content .lead"),
   whatsappHero: document.querySelector("#whatsappHero"),
   searchInput: document.querySelector("#searchInput"),
   statusFilter: document.querySelector("#statusFilter"),
@@ -255,6 +256,11 @@ function renderMeta() {
   els.ticketPrice.textContent = state.meta.price || "R$ 5,00";
   els.drawDate.textContent = state.meta.drawDate || "Pela Loteria Federal após todos os números serem vendidos";
   els.paymentInfo.textContent = state.meta.payment || "PIX após reserva";
+  if (els.heroLead) {
+    const first = formatNumber(CONFIG.firstNumber);
+    const last = formatNumber(CONFIG.firstNumber + CONFIG.defaultTotal - 1);
+    els.heroLead.innerHTML = `Números de <b>${first} a ${last}</b> por apenas <b>R$ 5,00</b>. Consulte, escolha e fale comigo para reservar.`;
+  }
   if (els.whatsappHero) {
     els.whatsappHero.href = "#numeros";
   }
