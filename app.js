@@ -1,13 +1,13 @@
 const CONFIG = {
   adminPassword: "1234",
   firstNumber: 0,
-  defaultTotal: 120,
+  defaultTotal: 100,
   numberPadding: 2,
   sheetCsvUrl: "https://docs.google.com/spreadsheets/d/1AHWfMZH3vjHFnESDL-IpOyA8Ay14RluC1U7a49oqjD0/export?format=csv&gid=0",
   sheetEditUrl: "https://docs.google.com/spreadsheets/d/1AHWfMZH3vjHFnESDL-IpOyA8Ay14RluC1U7a49oqjD0/edit?usp=sharing",
   whatsappNumber: "5521972249846",
   whatsappMessage: "Olá! Quero reservar o(s) número(s) {number} da rifa da Camisa da Seleção Brasileira Amarela (Tamanho a combinar).",
-  storageKey: "rifa-camisa-selecao-v3"
+  storageKey: "rifa-camisa-selecao-v4"
 };
 
 const state = {
@@ -178,8 +178,8 @@ function createDefaultData() {
 }
 
 function normalizeTickets(data) {
-  const total = data.total || data.tickets?.length || CONFIG.defaultTotal;
-  const firstNumber = Number.isInteger(data.firstNumber) ? data.firstNumber : CONFIG.firstNumber;
+  const total = CONFIG.defaultTotal;
+  const firstNumber = CONFIG.firstNumber;
   const incoming = new Map((data.tickets || []).map((ticket) => [Number(ticket.number), ticket]));
 
   return Array.from({ length: total }, (_, index) => {
@@ -476,16 +476,18 @@ function rowsToData(header, rows) {
       status: row[index.status] || "available",
       buyer: index.buyer >= 0 ? row[index.buyer] || "" : ""
     }))
-    .filter((ticket) => Number.isInteger(ticket.number));
+    .filter((ticket) => {
+      const maxNumber = CONFIG.firstNumber + CONFIG.defaultTotal - 1;
+      return Number.isInteger(ticket.number) && ticket.number >= CONFIG.firstNumber && ticket.number <= maxNumber;
+    });
 
   const numbers = tickets.map((ticket) => ticket.number);
   const firstNumber = numbers.length ? Math.min(...numbers) : CONFIG.firstNumber;
-  const total = numbers.length ? Math.max(...numbers) - firstNumber + 1 : CONFIG.defaultTotal;
 
   return {
     meta: createDefaultData().meta,
     firstNumber,
-    total,
+    total: CONFIG.defaultTotal,
     tickets
   };
 }
