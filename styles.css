@@ -633,3 +633,226 @@ footer {
     grid-template-columns: repeat(auto-fill, minmax(48px, 1fr));
   }
 }
+
+/* Página pública de encerramento da campanha */
+.soldout-page {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 12% 16%, rgba(255, 224, 79, .42), transparent 24%),
+    radial-gradient(circle at 88% 80%, rgba(35, 105, 190, .42), transparent 28%),
+    linear-gradient(135deg, #087348 0%, #064c38 44%, #082e4e 100%);
+}
+
+.soldout {
+  width: min(1180px, calc(100% - 32px));
+  min-height: 100vh;
+  margin: 0 auto;
+  display: grid;
+  place-items: center;
+  padding: clamp(24px, 5vw, 64px) 0;
+}
+
+.soldout__card {
+  width: 100%;
+  display: grid;
+  grid-template-columns: minmax(280px, 480px) minmax(300px, 1fr);
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, .28);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, .97);
+  box-shadow: 0 32px 90px rgba(0, 20, 20, .38);
+}
+
+.soldout__visual {
+  min-height: 620px;
+  position: relative;
+  overflow: hidden;
+  background: #062f2a;
+}
+
+.soldout__image {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.soldout__visual::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 48%, rgba(0, 25, 24, .42));
+  pointer-events: none;
+}
+
+.soldout__stamp {
+  width: 115%;
+  position: absolute;
+  z-index: 1;
+  left: -7.5%;
+  top: 46%;
+  padding: 14px 20px 16px;
+  border-top: 4px solid #fff;
+  border-bottom: 4px solid #fff;
+  background: rgba(201, 34, 43, .94);
+  color: #fff;
+  text-align: center;
+  text-transform: uppercase;
+  transform: rotate(-8deg);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, .38);
+}
+
+.soldout__stamp span,
+.soldout__stamp strong {
+  display: block;
+}
+
+.soldout__stamp span {
+  font-size: .78rem;
+  font-weight: 900;
+  letter-spacing: .22em;
+}
+
+.soldout__stamp strong {
+  font-size: clamp(2.8rem, 6vw, 5rem);
+  line-height: .95;
+  letter-spacing: .04em;
+}
+
+.soldout__content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(30px, 6vw, 72px);
+}
+
+.soldout__eyebrow {
+  width: fit-content;
+  margin-bottom: 16px;
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: #dff3e7;
+  color: var(--green-dark);
+  font-size: .78rem;
+  font-weight: 900;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.soldout__content h1 {
+  margin-bottom: 20px;
+  color: var(--green-dark);
+  font-size: clamp(3rem, 7vw, 6.4rem);
+  line-height: .9;
+  letter-spacing: -.045em;
+}
+
+.soldout__thanks {
+  max-width: 640px;
+  margin-bottom: 28px;
+  color: #40554d;
+  font-size: clamp(1.05rem, 2vw, 1.3rem);
+}
+
+.draw-card {
+  margin-bottom: 24px;
+  padding: clamp(20px, 4vw, 30px);
+  border-left: 7px solid var(--yellow);
+  border-radius: 4px 16px 16px 4px;
+  background: linear-gradient(135deg, #0f7049, #123e69);
+  color: #fff;
+  box-shadow: 0 16px 34px rgba(17, 58, 42, .2);
+}
+
+.draw-card__label {
+  margin-bottom: 8px;
+  color: #ffe178;
+  font-size: .82rem;
+  font-weight: 900;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.draw-card strong,
+.draw-card span {
+  display: block;
+}
+
+.draw-card strong {
+  font-size: clamp(1.8rem, 4vw, 3.1rem);
+  line-height: 1.05;
+}
+
+.draw-card span {
+  margin-top: 7px;
+  color: #ffe178;
+  font-size: clamp(1.25rem, 2.6vw, 1.8rem);
+  font-weight: 900;
+}
+
+.soldout__note {
+  margin-bottom: 22px;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.soldout__social p {
+  margin: 0 0 10px;
+  color: var(--muted);
+  font-size: .95rem;
+  font-weight: 700;
+}
+
+.soldout__instagram {
+  width: fit-content;
+  min-height: 46px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 18px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #ffd76f, #f03c68 48%, #6f45d8);
+  color: var(--white);
+  font-weight: 700;
+  gap: 5px;
+  text-decoration: none;
+  box-shadow: 0 10px 24px rgba(17, 28, 58, .28);
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+
+.soldout__instagram strong {
+  font-weight: 900;
+}
+
+.soldout__instagram:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 13px 28px rgba(17, 28, 58, .34);
+}
+
+@media (max-width: 800px) {
+  .soldout {
+    padding: 16px 0;
+  }
+
+  .soldout__card {
+    grid-template-columns: 1fr;
+    border-radius: 18px;
+  }
+
+  .soldout__visual {
+    min-height: 0;
+    aspect-ratio: 4 / 5;
+  }
+
+  .soldout__content {
+    padding: 30px 22px 36px;
+  }
+
+  .soldout__content h1 {
+    font-size: clamp(3rem, 16vw, 5.2rem);
+  }
+
+  .soldout__instagram {
+    width: 100%;
+  }
+}
