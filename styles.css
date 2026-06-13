@@ -664,19 +664,16 @@ footer {
 }
 
 .soldout__visual {
-  min-height: 620px;
   position: relative;
   overflow: hidden;
-  display: grid;
-  place-items: center;
   background: #062f2a;
 }
 
 .soldout__image {
   width: 100%;
-  height: 100%;
+  max-width: 100%;
+  height: auto;
   display: block;
-  object-fit: contain;
 }
 
 .soldout__visual::after {
@@ -843,7 +840,7 @@ footer {
 
   .soldout__visual {
     min-height: 0;
-    aspect-ratio: 2 / 3;
+    aspect-ratio: auto;
   }
 
   .soldout__content {
